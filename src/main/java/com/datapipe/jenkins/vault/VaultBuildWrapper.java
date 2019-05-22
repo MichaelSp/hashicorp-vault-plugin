@@ -137,8 +137,10 @@ public class VaultBuildWrapper extends SimpleBuildWrapper {
                 responses.add(response);
                 Map<String, String> values = response.getData();
                 for (VaultSecretValue value : vaultSecret.getSecretValues()) {
-                    valuesToMask.add(values.get(value.getVaultKey()));
-                    context.env(value.getEnvVar(), values.get(value.getVaultKey()));
+                    if (values.containsKey(value.getVaultKey())) {
+                        valuesToMask.add(values.get(value.getVaultKey()));
+                        context.env(value.getEnvVar(), values.get(value.getVaultKey()));
+                    }
                 }
             }catch (VaultPluginException ex) {
                 VaultException e = (VaultException) ex.getCause();
